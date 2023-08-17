@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "./styles/App.css";
 import PostList from "./components/PostList";
-
 import PostForm from "./components/UI/PostForm";
-import MySelect from "./components/select/MySelect";
+
+import Kyle from "./components/Kyle";
+import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/MyModal/MyModal";
+import MyButton from "./components/UI/button/MyButton";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -11,39 +14,51 @@ function App() {
     { id: 2, title: "Javascript", body: "bcded" },
     { id: 3, title: "Java", body: "rst" },
   ]);
-  const [selectedSort, setSelectedSort] = useState("");
+  const [filter, setFilter] = useState({ sort: "", query: "" });
+  const [modal, setModal] = useState(false);
+
+  const sortedPosts = useMemo(() => {
+    if (filter.sort) {
+      return [...posts].sort((a, b) =>
+        a[filter.sort].localeCompare(b[filter.sort])
+      );
+    }
+    return posts;
+  }, [filter.sort, posts]);
+
+  const sortedAndSearchedPosts = useMemo(() => {
+    return sortedPosts.filter((post) =>
+      post.title.toLowerCase().includes(filter.query.toLowerCase())
+    );
+  }, [filter.query, sortedPosts]);
+
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
+    setModal(false);
   };
-  // получаем post из дочернего компонента
+
   const removePost = (post) => {
     setPosts(posts.filter((p) => p.id !== post.id));
   };
 
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
-  };
-
   return (
     <div className="App">
+      {/* <Kyle /> */}
+      <MyButton style={{ marginTop: "30px" }} onClick={() => setModal(true)}>
+        Создать пользователя
+      </MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost} />
+      </MyModal>
       <PostForm create={createPost} />
       <hr style={{ margin: "15px" }} />
-      <MySelect
-        value={selectedSort}
-        onChange={sortPosts}
-        defaultValue="Сортировка"
-        options={[
-          { value: "title", name: "По названию" },
-          { value: "body", name: "По описанию" },
-        ]}
-      />
+      <PostFilter filter={filter} setFilter={setFilter} />
 
-      {posts.length ? (
-        <PostList remove={removePost} posts={posts} title="Посты про JS" />
-      ) : (
-        <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>
-      )}
+      <PostList
+        remove={removePost}
+        posts={sortedAndSearchedPosts}
+        title="Посты про JS"
+      />
     </div>
   );
 }
