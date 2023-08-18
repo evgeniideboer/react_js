@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-export default function Kyle() {
+export default function KyleUseMemo() {
   const [number, setNumber] = useState(0);
   const [dark, setDark] = useState(false);
   const doubleNumber = useMemo(() => {
