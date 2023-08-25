@@ -5,8 +5,8 @@ const Error = () => {
   const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
-      navigate("/about", { state: "Error not page" });
-    }, 2000);
+      navigate("/login", { state: "Error not page" });
+    }, 1000);
   }, []);
   return <h1 style={{ color: "red" }}>Страница не существует</h1>;
 };
