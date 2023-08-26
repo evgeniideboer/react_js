@@ -1,8 +1,36 @@
 .myBtn {
+  /* Existing button styles */
   padding: 5px 15px;
   color: teal;
   font-size: 14px;
   background: transparent;
   border: 1px solid teal;
   cursor: pointer;
+
+  /* Tooltip styles */
+  position: relative;
+  display: inline-block;
+}
+
+/* Show tooltip on hover only if data-tooltip is provided */
+.myBtn[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 100%;
+  transform: translateX(-50%);
+  background-color: gainsboro;
+  color: black;
+  padding: 4px 8px;
+  font-size: 15px;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 1;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.myBtn[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
